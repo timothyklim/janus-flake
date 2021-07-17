@@ -52,8 +52,6 @@ let
     general: {
       events = true
       json = "compact"
-      pingpong_trigger = 30
-      pingpong_timeout = 10
       ws = true
       ws_port = ${toString cfg.transport.ws.port}
       ws_ip = "${cfg.transport.ws.interface}"
