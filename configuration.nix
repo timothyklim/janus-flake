@@ -196,7 +196,7 @@ in
 
     systemd = {
       tmpfiles.rules = [
-        "d '${cfg.persistedDir}' 0755 janus janus - -"
+        "d '${cfg.persistedDir}' 0775 janus janus - -"
       ];
       services.janus = {
         description = "Janus gateway";

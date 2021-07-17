@@ -5,7 +5,7 @@ with pkgs; gcc11Stdenv.mkDerivation {
 
   name = "janus";
 
-  CFLAGS = "-O3 -march=native -mtune=native -funroll-loops -fomit-frame-pointer -flto";
+  CFLAGS = "-O3 -march=westmere -mtune=haswell -funroll-loops -fomit-frame-pointer -flto";
 
   preferLocalBuild = true;
 
