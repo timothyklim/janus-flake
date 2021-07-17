@@ -38,6 +38,7 @@ let
     nat: {
       ${stunConf cfg.stun}
       ${turnConf cfg.turn}
+      ${optionalString (cfg.ice_enforce_list != []) ''ice_enforce_list = ${concatStringsSep "," cfg.ice_enforce_list}''}
     }
     events: {
       broadcast = true
@@ -163,6 +164,16 @@ in
             WebSocket transport port
           '';
         };
+      };
+
+      ice_enforce_list = mkOption {
+        default = [ ];
+        type = types.listOf types.str;
+        description = ''
+          Which interfaces should be explicitly used by the
+          gateway for the purpose of ICE candidates gathering, thus excluding
+          others that may be available
+        '';
       };
 
       stun = mkOption {
