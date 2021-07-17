@@ -72,6 +72,54 @@ let
     cp ${videocallConf} $out/janus.plugin.videocall.jcfg
     cp ${websocketsConf} $out/janus.transport.websockets.jcfg
   '';
+
+  stunOptions = {
+    server = mkOption {
+      type = types.str;
+      description = ''
+        STUN server
+      '';
+    };
+    port = mkOption {
+      type = types.port;
+      description = ''
+        STUN port
+      '';
+    };
+  };
+
+  turnOptions = {
+    server = mkOption {
+      type = types.str;
+      description = ''
+        TURN server
+      '';
+    };
+    port = mkOption {
+      type = types.port;
+      description = ''
+        TURN port
+      '';
+    };
+    user = mkOption {
+      type = types.str;
+      description = ''
+        TURN server user
+      '';
+    };
+    password = mkOption {
+      type = types.str;
+      description = ''
+        TURN server password
+      '';
+    };
+    type = mkOption {
+      type = types.enum [ "udp" " tcp" "tls" ];
+      description = ''
+        TURN server type
+      '';
+    };
+  };
 in
 {
   options = {
@@ -117,52 +165,14 @@ in
         };
       };
 
-      stun = {
-        server = mkOption {
-          type = types.str;
-          description = ''
-            STUN server
-          '';
-        };
-        port = mkOption {
-          type = types.port;
-          description = ''
-            STUN port
-          '';
-        };
+      stun = mkOption {
+        type = types.nullOr (types.submodule ({ ... }: { options = stunOptions; }));
+        default = null;
       };
 
-      turn = {
-        server = mkOption {
-          type = types.str;
-          description = ''
-            TURN server
-          '';
-        };
-        port = mkOption {
-          type = types.port;
-          description = ''
-            TURN port
-          '';
-        };
-        user = mkOption {
-          type = types.str;
-          description = ''
-            TURN server user
-          '';
-        };
-        password = mkOption {
-          type = types.str;
-          description = ''
-            TURN server password
-          '';
-        };
-        type = mkOption {
-          type = types.enum [ "udp" " tcp" "tls" ];
-          description = ''
-            TURN server type
-          '';
-        };
+      turn = mkOption {
+        type = types.nullOr (types.submodule ({ ... }: { options = turnOptions; }));
+        default = null;
       };
 
       media = {
