@@ -36,10 +36,10 @@ with pkgs; gcc11Stdenv.mkDerivation {
       --disable-all-handlers \
       --disable-all-loggers \
       --enable-fast-install \
-      --enable-static \
       --enable-libsrtp2 \
+      --enable-plugin-videocall \
       --enable-post-processing \
-      --enable-websockets \
-      --enable-plugin-videocall
+      --enable-static \
+      --enable-websockets
   '';
 }

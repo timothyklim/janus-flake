@@ -4,19 +4,6 @@ with lib;
 let
   cfg = config.services.janus;
 
-  stunConf = stun: optionalString (stun != null) ''
-    stun_server = "${stun.server}"
-    stun_port = ${toString stun.port}
-  '';
-
-  turnConf = turn: optionalString (turn != null) ''
-    turn_server = "${turn.server}"
-    turn_port = ${toString turn.port}
-    turn_type = "${turn.type}"
-    turn_user = "${turn.user}"
-    turn_pwd = "${turn.password}"
-  '';
-
   janusConf = pkgs.writeText "janus.jcfg" ''
     general: {
       log_to_stdout = true
@@ -36,9 +23,18 @@ let
       nack_optimizations = true
     }
     nat: {
-      ${stunConf cfg.stun}
-      ${turnConf cfg.turn}
-      ${optionalString (cfg.ice_enforce_list != []) ''ice_enforce_list = ${concatStringsSep "," cfg.ice_enforce_list}''}
+      ${(stun: optionalString (stun != null) ''
+        stun_server = "${stun.server}"
+        stun_port = ${toString stun.port}
+      '') cfg.stun}
+      ${(turn: optionalString (turn != null) ''
+        turn_server = "${turn.server}"
+        turn_port = ${toString turn.port}
+        turn_type = "${turn.type}"
+        turn_user = "${turn.user}"
+        turn_pwd = "${turn.password}"
+      '') cfg.turn}
+      ${optionalString (cfg.ice_enforce_list != []) ''ice_enforce_list = "${concatStringsSep "," cfg.ice_enforce_list}"''}
     }
     events: {
       broadcast = true
