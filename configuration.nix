@@ -37,17 +37,17 @@ let
       ${optionalString (cfg.ice_enforce_list != []) ''ice_enforce_list = "${concatStringsSep "," cfg.ice_enforce_list}"''}
     }
     events: {
-      broadcast = true
+      broadcast = ${boolToString cfg.events.broadcast}
     }
   '';
   videocallConf = pkgs.writeText "janus.plugin.videocall.jcfg" ''
     general: {
-      events = true
+      events = ${boolToString cfg.videocall.events}
     }
   '';
   websocketsConf = pkgs.writeText "janus.transport.websockets.jcfg" ''
     general: {
-      events = true
+      events = ${boolToString cfg.transport.ws.events}
       json = "compact"
       ws = true
       ws_port = ${toString cfg.transport.ws.port}
@@ -59,6 +59,16 @@ let
       admin_ws = false
     }
   '';
+  wsevhConf = pkgs.writeText "janus.eventhandler.wsevh.jcfg" ''
+    general: {
+      enabled = ${boolToString cfg.events-handler.ws.enabled}
+      events = "${concatStringsSep "," cfg.events-handler.ws.events}"
+      grouping = ${boolToString cfg.events-handler.ws.grouping}
+      json = "compact"
+      backend = "${cfg.events-handler.ws.backend}"
+      ws_logging = "err,warn"
+    }
+  '';
   janusDir = pkgs.runCommand "janus-conf"
     {
       preferLocalBuild = true;
@@ -68,6 +78,7 @@ let
     cp ${janusConf} $out/janus.jcfg
     cp ${videocallConf} $out/janus.plugin.videocall.jcfg
     cp ${websocketsConf} $out/janus.transport.websockets.jcfg
+    cp ${wsevhConf} $out/janus.eventhandler.wsevh.jcfg
   '';
 
   stunOptions = {
@@ -148,7 +159,21 @@ in
         default = 0;
       };
 
+      events.broadcast = mkOption {
+        type = types.bool;
+        default = true;
+      };
+
+      videocall.events = mkOption {
+        type = types.bool;
+        default = true;
+      };
+
       transport.ws = {
+        events = mkOption {
+          type = types.bool;
+          default = true;
+        };
         interface = mkOption {
           default = "127.0.0.1";
           type = types.str;
@@ -159,6 +184,34 @@ in
           description = ''
             WebSocket transport port
           '';
+        };
+      };
+
+      events-handler.ws = {
+        enabled = mkOption {
+          type = types.bool;
+          default = true;
+        };
+        events = mkOption {
+          type = types.listOf (types.enum [ "none" "sessions" "handles" "jsep" "webrtc" "media" "plugins" "transports" "core" "external" "all" ]);
+          default = [ "all" ];
+          description = ''
+            List of the events mask you're interested in.
+          '';
+        };
+        grouping = mkOption {
+          type = types.bool;
+          default = true;
+          description = ''
+            Whether events should be sent individually (one per
+            HTTP POST, JSON object), or if it's ok to group them
+            (one or more per HTTP POST, JSON array with objects)
+            The default is 'yes' to limit the number of connections.
+          '';
+        };
+        backend = mkOption {
+          type = types.str;
+          example = "ws://127.0.0.1:8189";
         };
       };
 

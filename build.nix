@@ -27,6 +27,10 @@ with pkgs; gcc11Stdenv.mkDerivation {
     zlib
   ];
 
+  patches = [
+    ./patches/janus_wsevh.patch
+  ];
+
   configurePhase = ''
     sh autogen.sh
 
@@ -40,6 +44,7 @@ with pkgs; gcc11Stdenv.mkDerivation {
       --enable-plugin-videocall \
       --enable-post-processing \
       --enable-static \
-      --enable-websockets
+      --enable-websockets \
+      --enable-websockets-event-handler
   '';
 }

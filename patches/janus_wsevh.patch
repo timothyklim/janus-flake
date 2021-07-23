@@ -1,0 +1,37 @@
+diff --git a/events/janus_wsevh.c b/events/janus_wsevh.c
+index 198db7ab..a62b21e5 100644
+--- a/events/janus_wsevh.c
++++ b/events/janus_wsevh.c
+@@ -152,7 +152,7 @@ static int port = 0;
+ static struct lws_context *context = NULL;
+ static gint64 disconnected = 0;
+ static gboolean reconnect = FALSE;
+-static int reconnect_retries = 0;
++static int reconnect_retries = 1;
+ 
+ typedef struct janus_wsevh_client {
+ 	struct lws *wsi;		/* The libwebsockets client instance */
+@@ -588,10 +588,10 @@ static void *janus_wsevh_thread(void *data) {
+ 					continue;
+ 				}
+ 			}
+-			if(reconnect_retries == 0)
+-				reconnect_retries++;
+-			else
+-				reconnect_retries += reconnect_retries;
++			// if(reconnect_retries == 0)
++			// 	reconnect_retries++;
++			// else
++			// 	reconnect_retries += reconnect_retries;
+ 			JANUS_LOG(LOG_WARN, "Reconnecting to WebSockets event handler backend... (next retry in %ds)\n",
+ 				reconnect_retries);
+ 			ws_client = NULL;
+@@ -705,7 +705,7 @@ static int janus_wsevh_callback(struct lws *wsi, enum lws_callback_reasons reaso
+ 			ws_client->buflen = 0;
+ 			ws_client->bufpending = 0;
+ 			ws_client->bufoffset = 0;
+-			reconnect_retries = 0;
++			// reconnect_retries = 0;
+ 			janus_mutex_init(&ws_client->mutex);
+ 			return 0;
+ 		}
