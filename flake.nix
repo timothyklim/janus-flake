@@ -6,7 +6,7 @@
     flake-utils.url = "github:numtide/flake-utils";
 
     src = {
-      url = "github:meetecho/janus-gateway/v0.11.3";
+      url = "github:meetecho/janus-gateway";
       flake = false;
     };
   };
