@@ -1,6 +1,14 @@
 { pkgs, src }:
 
-with pkgs; gcc11Stdenv.mkDerivation {
+with pkgs;
+let
+  libwebsockets_janus = libwebsockets.overrideAttrs (_: {
+    configureFlags = [
+      "-DLWS_MAX_SMP=1"
+      "-DLWS_WITHOUT_EXTENSIONS=0"
+    ];
+  });
+in gcc11Stdenv.mkDerivation {
   inherit src;
 
   name = "janus";
@@ -9,42 +17,44 @@ with pkgs; gcc11Stdenv.mkDerivation {
 
   preferLocalBuild = true;
 
-  nativeBuildInputs = [ cmake automake autoreconfHook pkg-config libtool ];
+  nativeBuildInputs = [ autoreconfHook pkg-config gengetopt ];
   buildInputs = [
+    boringssl
     curl
     ffmpeg
-    gengetopt
     glib
     jansson
     libconfig
+    libmicrohttpd
     libnice
     libogg
     libopus
     libuv
-    libwebsockets
-    openssl
+    libwebsockets_janus
+    sofia_sip
     srtp
+    usrsctp
     zlib
   ];
+
+  enableParallelBuilding = true;
 
   patches = [
     ./patches/janus_wsevh.patch
   ];
 
-  configurePhase = ''
-    sh autogen.sh
-
-    ./configure --prefix=$out \
-      --disable-all-transports \
-      --disable-all-plugins \
-      --disable-all-handlers \
-      --disable-all-loggers \
-      --enable-fast-install \
-      --enable-libsrtp2 \
-      --enable-plugin-videocall \
-      --enable-post-processing \
-      --enable-static \
-      --enable-websockets \
-      --enable-websockets-event-handler
-  '';
+  configureFlags = [
+      "--disable-all-handlers"
+      "--disable-all-loggers"
+      "--disable-all-plugins"
+      "--disable-all-transports"
+      "--enable-boringssl=${boringssl}"
+      "--enable-fast-install"
+      "--enable-libsrtp2"
+      "--enable-plugin-videocall"
+      "--enable-post-processing"
+      "--enable-static"
+      "--enable-websockets"
+      "--enable-websockets-event-handler"
+  ];
 }
