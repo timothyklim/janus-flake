@@ -34,7 +34,9 @@ let
         turn_user = "${turn.user}"
         turn_pwd = "${turn.password}"
       '') cfg.turn}
-      ${optionalString (cfg.ice_enforce_list != []) ''ice_enforce_list = "${concatStringsSep "," cfg.ice_enforce_list}"''}
+      ${optionalString (cfg.nat.ice_enforce_list != []) ''ice_enforce_list = "${concatStringsSep "," cfg.nat.ice_enforce_list}"''}
+      ice_lite = ${boolToString cfg.nat.ice_lite}
+      ice_tcp = ${boolToString cfg.nat.ice_tcp}
     }
     events: {
       broadcast = ${boolToString cfg.events.broadcast}
@@ -215,14 +217,24 @@ in
         };
       };
 
-      ice_enforce_list = mkOption {
-        default = [ ];
-        type = types.listOf types.str;
-        description = ''
-          Which interfaces should be explicitly used by the
-          gateway for the purpose of ICE candidates gathering, thus excluding
-          others that may be available
-        '';
+      nat = {
+        ice_enforce_list = mkOption {
+          default = [ ];
+          type = types.listOf types.str;
+          description = ''
+            Which interfaces should be explicitly used by the
+            gateway for the purpose of ICE candidates gathering, thus excluding
+            others that may be available
+          '';
+        };
+        ice_lite = mkOption {
+          type = types.bool;
+          default = false;
+        };
+	      ice_tcp = mkOption {
+          type = types.bool;
+          default = false;
+        };
       };
 
       stun = mkOption {
