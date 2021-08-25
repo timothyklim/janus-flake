@@ -42,9 +42,28 @@ let
       broadcast = ${boolToString cfg.events.broadcast}
     }
   '';
+  httpConf = pkgs.writeText "janus.transport.http.jcfg" ''
+    general: {
+    	events = true					# Whether to notify event handlers about transport events (default=true)
+    	json = "compact"				# Whether the JSON messages should be indented (default),
+    	base_path = "/janus"			# Base path to bind to in the web server (plain HTTP only)
+    	http = true						# Whether to enable the plain HTTP interface
+    	port = 8088						# Web server HTTP port
+    	https = false					# Whether to enable HTTPS (default=false)
+    }
+  '';
   videocallConf = pkgs.writeText "janus.plugin.videocall.jcfg" ''
     general: {
       events = ${boolToString cfg.videocall.events}
+    }
+  '';
+  videoroomConf = pkgs.writeText "janus.plugin.videoroom.jcfg" ''
+    room-1234: {
+      is_private = true
+      publishers = 2
+    }
+    general: {
+    	events = true					# Whether events should be sent to event
     }
   '';
   websocketsConf = pkgs.writeText "janus.transport.websockets.jcfg" ''
@@ -78,7 +97,9 @@ let
     } ''
     mkdir -p $out
     cp ${janusConf} $out/janus.jcfg
+    cp ${httpConf} $out/janus.transport.http.jcfg
     cp ${videocallConf} $out/janus.plugin.videocall.jcfg
+    cp ${videoroomConf} $out/janus.plugin.videoroom.jcfg
     cp ${websocketsConf} $out/janus.transport.websockets.jcfg
     cp ${wsevhConf} $out/janus.eventhandler.wsevh.jcfg
   '';

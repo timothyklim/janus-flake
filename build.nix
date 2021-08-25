@@ -52,9 +52,11 @@ in gcc11Stdenv.mkDerivation {
       "--enable-fast-install"
       "--enable-libsrtp2"
       "--enable-plugin-videocall"
+      "--enable-plugin-videoroom"
       "--enable-post-processing"
+      "--enable-rest"
       "--enable-static"
-      "--enable-websockets"
       "--enable-websockets-event-handler"
+      "--enable-websockets"
   ];
 }
