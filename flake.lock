@@ -17,16 +17,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1629772723,
-        "narHash": "sha256-/BQRsa1FsGb7v4xylPnHhU2/chw3EFbCv5/ZaY/eNsE=",
+        "lastModified": 1648203577,
+        "narHash": "sha256-CbXZkiVTA0ByV/yncFHCAGIa/AfcSb0cjqzEa56rO+Y=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "d5aadbefd650cb0a05ba9c788a26327afce2396c",
+        "rev": "d89f18a17e51532ed5f4d45297b0ddf11e46b9c8",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-21.05",
+        "ref": "nixos-21.11",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -41,15 +41,16 @@
     "src": {
       "flake": false,
       "locked": {
-        "lastModified": 1627655262,
-        "narHash": "sha256-fR39I+GBgIR9SsjOq/r4QiPLYYwRr63e9j8sRdBBqLE=",
+        "lastModified": 1646304278,
+        "narHash": "sha256-BREPSDmGR85kDx1PWLdwpbwImAFuctLLx3AcHqAcURk=",
         "owner": "meetecho",
         "repo": "janus-gateway",
-        "rev": "dca2068beb8df3aaed64cb6f91ffce6078d75f61",
+        "rev": "e306213da1bc7d2cd43400ddabd1eac1570aed38",
         "type": "github"
       },
       "original": {
         "owner": "meetecho",
+        "ref": "v1.0.0",
         "repo": "janus-gateway",
         "type": "github"
       }

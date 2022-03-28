@@ -39,10 +39,6 @@ in gcc11Stdenv.mkDerivation {
 
   enableParallelBuilding = true;
 
-  patches = [
-    ./patches/janus_wsevh.patch
-  ];
-
   configureFlags = [
       "--disable-all-handlers"
       "--disable-all-loggers"

@@ -2,11 +2,11 @@
   description = "Janus flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-21.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-21.11";
     flake-utils.url = "github:numtide/flake-utils";
 
     src = {
-      url = "github:meetecho/janus-gateway";
+      url = "github:meetecho/janus-gateway/v1.0.0";
       flake = false;
     };
   };
