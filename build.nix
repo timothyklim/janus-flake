@@ -8,7 +8,7 @@ let
       "-DLWS_WITHOUT_EXTENSIONS=0"
     ];
   });
-in gcc11Stdenv.mkDerivation {
+in gcc12Stdenv.mkDerivation {
   inherit src;
 
   name = "janus";
@@ -19,7 +19,7 @@ in gcc11Stdenv.mkDerivation {
 
   nativeBuildInputs = [ autoreconfHook pkg-config gengetopt ];
   buildInputs = [
-    boringssl
+    openssl
     curl
     ffmpeg
     glib
@@ -44,7 +44,6 @@ in gcc11Stdenv.mkDerivation {
       "--disable-all-loggers"
       "--disable-all-plugins"
       "--disable-all-transports"
-      "--enable-boringssl=${boringssl}"
       "--enable-fast-install"
       "--enable-libsrtp2"
       "--enable-plugin-videocall"

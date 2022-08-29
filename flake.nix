@@ -2,11 +2,11 @@
   description = "Janus flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-21.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.05";
     flake-utils.url = "github:numtide/flake-utils";
 
     src = {
-      url = "github:meetecho/janus-gateway/v1.0.0";
+      url = "github:meetecho/janus-gateway/v1.0.4";
       flake = false;
     };
   };
@@ -20,25 +20,24 @@
       derivation = { inherit janus; };
     in
     rec {
-      packages.${system} = derivation;
-      defaultPackage.${system} = janus;
-      legacyPackages.${system} = pkgs.extend overlay;
-      apps.janus.${system} = janus-app;
-      defaultApp.${system} = janus-app;
-      devShell.${system} = pkgs.callPackage ./shell.nix {
-        inherit janus;
+      packages.${system} = derivation // { default = janus; };
+      legacyPackages.${system} = pkgs.extend overlays.default;
+      apps.${system} = {
+        default = janus-app;
+        janus = janus-app;
       };
-      nixosModule = {
+      devShells.${system}.default = pkgs.callPackage ./shell.nix { inherit janus; };
+      nixosModules.default = {
         imports = [
           ./configuration.nix
         ];
         nixpkgs.overlays = [
-          overlay
+          overlays.default
         ];
         services.janus = {
           package = pkgs.lib.mkDefault janus;
         };
       };
-      overlay = final: prev: derivation;
+      overlays.default = final: prev: derivation;
     };
 }
