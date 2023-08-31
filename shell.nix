@@ -53,7 +53,7 @@ let
 in
 mkShell {
   name = "janus-env";
-  buildInputs = [ janus python3Minimal aiortc py.websockets ] ++ [
+  buildInputs = [ janus python3Minimal /*aiortc py.websockets*/ ] ++ [
     ffmpeg
     gengetopt
     glib

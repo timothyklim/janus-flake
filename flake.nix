@@ -12,32 +12,33 @@
   };
 
   outputs = { self, nixpkgs, flake-utils, src }:
-    let
-      system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
-      janus = import ./build.nix { inherit pkgs src; };
-      janus-app = flake-utils.lib.mkApp { drv = janus; };
-      derivation = { inherit janus; };
-    in
-    rec {
-      packages.${system} = derivation // { default = janus; };
-      legacyPackages.${system} = pkgs.extend overlays.default;
-      apps.${system} = {
-        default = janus-app;
-        janus = janus-app;
-      };
-      devShells.${system}.default = pkgs.callPackage ./shell.nix { inherit janus; };
-      nixosModules.default = {
-        imports = [
-          ./configuration.nix
-        ];
-        nixpkgs.overlays = [
-          overlays.default
-        ];
-        services.janus = {
-          package = pkgs.lib.mkDefault janus;
+    with flake-utils.lib; eachSystem [ system.x86_64-linux system.aarch64-linux system.aarch64-darwin ] (system:
+      let
+        pkgs = import nixpkgs { inherit system; };
+        janus = import ./build.nix { inherit pkgs src; };
+        janus-app = flake-utils.lib.mkApp { drv = janus; };
+        derivation = { inherit janus; };
+      in
+      rec {
+        packages = derivation // { default = janus; };
+        legacyPackages = pkgs.extend overlays.default;
+        apps = {
+          default = janus-app;
+          janus = janus-app;
         };
-      };
-      overlays.default = final: prev: derivation;
-    };
+        devShell = pkgs.callPackage ./shell.nix { inherit janus; };
+        nixosModules.default = {
+          imports = [
+            ./configuration.nix
+          ];
+          nixpkgs.overlays = [
+            overlays.default
+          ];
+          services.janus = {
+            package = pkgs.lib.mkDefault janus;
+          };
+        };
+        overlays.default = final: prev: derivation;
+        formatter = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
+      });
 }

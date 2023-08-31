@@ -8,12 +8,11 @@ let
       "-DLWS_WITHOUT_EXTENSIONS=0"
     ];
   });
-in gcc12Stdenv.mkDerivation {
+in
+stdenv.mkDerivation {
   inherit src;
 
   name = "janus";
-
-  CFLAGS = "-O3 -march=westmere -mtune=haswell -funroll-loops -fomit-frame-pointer -flto";
 
   preferLocalBuild = true;
 
@@ -35,23 +34,23 @@ in gcc12Stdenv.mkDerivation {
     srtp
     usrsctp
     zlib
-  ];
+  ] ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [ Security ]);
 
   enableParallelBuilding = true;
 
   configureFlags = [
-      "--disable-all-handlers"
-      "--disable-all-loggers"
-      "--disable-all-plugins"
-      "--disable-all-transports"
-      "--enable-fast-install"
-      "--enable-libsrtp2"
-      "--enable-plugin-videocall"
-      "--enable-plugin-videoroom"
-      "--enable-post-processing"
-      "--enable-rest"
-      "--enable-static"
-      "--enable-websockets-event-handler"
-      "--enable-websockets"
+    "--disable-all-handlers"
+    "--disable-all-loggers"
+    "--disable-all-plugins"
+    "--disable-all-transports"
+    "--enable-fast-install"
+    "--enable-libsrtp2"
+    "--enable-plugin-videocall"
+    "--enable-plugin-videoroom"
+    "--enable-post-processing"
+    "--enable-rest"
+    "--enable-static"
+    "--enable-websockets-event-handler"
+    "--enable-websockets"
   ];
 }
